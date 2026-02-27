@@ -1,14 +1,17 @@
+import "./load-env"; // must be first — loads .env before any other module runs
 import { createServer } from "http";
 import { Client, GatewayIntentBits } from "discord.js";
 import { env } from "@odin/config";
 import { prisma } from "@odin/db";
 
-// Health-check server — keeps Railway from sleeping the worker
-const PORT = process.env["PORT"] ?? 3001;
-createServer((req, res) => {
-  res.writeHead(200);
-  res.end("OK");
-}).listen(PORT);
+// Health-check server — keeps Railway from sleeping the worker (production only)
+if (process.env["NODE_ENV"] === "production") {
+  const PORT = process.env["PORT"] ?? 3001;
+  createServer((req, res) => {
+    res.writeHead(200);
+    res.end("OK");
+  }).listen(PORT);
+}
 
 // Validate bot-specific env vars at startup
 if (!env.DISCORD_TOKEN) {
