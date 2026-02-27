@@ -1,6 +1,6 @@
 # ODIN Platform — Project Status
 
-_Last updated: Session 2_
+_Last updated: Session 3_
 
 ---
 
@@ -73,10 +73,22 @@ _Last updated: Session 2_
 - User upsert on sign-in: new users default to `track=A, role=MEMBER` (update via DB for Track B)
 - JWT strategy: `userId`, `track`, `role` stored in token after first sign-in (no DB hit per request)
 
-**Pending (manual setup):**
-- Create Google OAuth app in Google Cloud Console → copy `GOOGLE_CLIENT_ID` + `GOOGLE_CLIENT_SECRET`
-- Add all four env vars to Vercel: `NEXTAUTH_URL`, `NEXTAUTH_SECRET`, `GOOGLE_CLIENT_ID`, `GOOGLE_CLIENT_SECRET`
-- End-to-end test login flow creates User in DB
+**Auth env vars (all configured):**
+- `AUTH_SECRET` — in Vercel + `apps/web/.env.local` (gitignored)
+- `NEXTAUTH_URL` — in Vercel + `apps/web/.env.local`
+- `GOOGLE_CLIENT_ID` / `GOOGLE_CLIENT_SECRET` — in Vercel + `apps/web/.env.local`
+- Root `.env` holds bot + DB vars; Next.js loads from `apps/web/.env.local` (not root)
+
+**Known quirks resolved:**
+- NextAuth v5 reads `AUTH_SECRET` (not `NEXTAUTH_SECRET`) — removed explicit `secret:` from config
+- Next.js doesn't auto-load root monorepo `.env` — must use `apps/web/.env.local` for web vars
+- Prisma DLL locked on Windows while dev server runs — stop all Node processes before `prisma generate`
+- `pnpm` not on Git Bash PATH — use `npx pnpm` for all commands
+
+**Deployed:** commit `7a379a5` on `deploy` branch ✓
+
+---
+
 ### Session 4 — Core API ⏳ Not started
 ### Session 5 — Web Dashboard ⏳ Not started
 ### Session 6 — Discord Bot + AI ⏳ Not started
