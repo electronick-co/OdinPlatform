@@ -1,0 +1,23 @@
+{
+  "name": "odin-platform",
+  "private": true,
+  "scripts": {
+    "build": "turbo build",
+    "dev": "turbo dev",
+    "typecheck": "turbo typecheck",
+    "lint": "turbo lint",
+    "db:generate": "pnpm --filter @odin/db db:generate",
+    "db:push": "pnpm --filter @odin/db db:push",
+    "db:seed": "pnpm --filter @odin/db seed",
+    "db:studio": "pnpm --filter @odin/db db:studio"
+  },
+  "devDependencies": {
+    "turbo": "^2.3.3",
+    "typescript": "^5.3.3"
+  },
+  "engines": {
+    "node": ">=18",
+    "pnpm": ">=8"
+  },
+  "packageManager": "pnpm@9.0.0"
+}

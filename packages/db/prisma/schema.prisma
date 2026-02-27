@@ -1,0 +1,204 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+// ============================================================
+// Enums
+// ============================================================
+
+enum Track {
+  A
+  B
+}
+
+enum Role {
+  MEMBER
+  ADMIN
+}
+
+enum TaskStatus {
+  TODO
+  IN_PROGRESS
+  DONE
+  BLOCKED
+}
+
+enum Priority {
+  LOW
+  MEDIUM
+  HIGH
+}
+
+enum LogSource {
+  WEB
+  BOT
+  CRON
+}
+
+// ============================================================
+// Users
+// ============================================================
+
+model User {
+  id         String   @id @default(cuid())
+  discord_id String?  @unique
+  email      String?  @unique
+  name       String
+  avatar_url String?
+  track      Track
+  role       Role     @default(MEMBER)
+  created_at DateTime @default(now())
+  updated_at DateTime @updatedAt
+
+  sprint_members    SprintMember[]
+  tasks             Task[]
+  module_progresses ModuleProgress[]
+  status_logs       StatusLog[]
+
+  @@map("users")
+}
+
+// ============================================================
+// Learning Modules (Track A = Claude Mastery, Track B = DeepClients)
+// ============================================================
+
+model Module {
+  id          String  @id @default(cuid())
+  title       String
+  description String?
+  track       Track
+  order       Int
+
+  challenges ModuleChallenge[]
+  progresses ModuleProgress[]
+
+  @@map("modules")
+}
+
+model ModuleChallenge {
+  id          String  @id @default(cuid())
+  module_id   String
+  title       String
+  description String?
+  order       Int
+
+  module Module @relation(fields: [module_id], references: [id], onDelete: Cascade)
+  tasks  Task[]
+
+  @@map("module_challenges")
+}
+
+// ============================================================
+// Sprints
+// ============================================================
+
+model Sprint {
+  id         String   @id @default(cuid())
+  name       String
+  start_date DateTime
+  end_date   DateTime
+  is_active  Boolean  @default(false)
+  created_at DateTime @default(now())
+
+  sprint_members SprintMember[]
+  tasks          Task[]
+
+  @@map("sprints")
+}
+
+model SprintMember {
+  sprint_id String
+  user_id   String
+
+  sprint Sprint @relation(fields: [sprint_id], references: [id], onDelete: Cascade)
+  user   User   @relation(fields: [user_id], references: [id], onDelete: Cascade)
+
+  @@id([sprint_id, user_id])
+  @@map("sprint_members")
+}
+
+// ============================================================
+// Tasks
+// ============================================================
+
+model Task {
+  id           String     @id @default(cuid())
+  sprint_id    String
+  assignee_id  String
+  challenge_id String?
+  title        String
+  description  String?
+  status       TaskStatus @default(TODO)
+  priority     Priority   @default(MEDIUM)
+  due_date     DateTime?
+  created_at   DateTime   @default(now())
+  updated_at   DateTime   @updatedAt
+
+  sprint      Sprint           @relation(fields: [sprint_id], references: [id])
+  assignee    User             @relation(fields: [assignee_id], references: [id])
+  challenge   ModuleChallenge? @relation(fields: [challenge_id], references: [id])
+  status_logs StatusLog[]
+
+  @@map("tasks")
+}
+
+// ============================================================
+// Progress Tracking
+// ============================================================
+
+model ModuleProgress {
+  id           String    @id @default(cuid())
+  user_id      String
+  module_id    String
+  completed    Boolean   @default(false)
+  cap_url      String?
+  submitted_at DateTime?
+
+  user   User   @relation(fields: [user_id], references: [id], onDelete: Cascade)
+  module Module @relation(fields: [module_id], references: [id], onDelete: Cascade)
+
+  @@unique([user_id, module_id])
+  @@map("module_progresses")
+}
+
+// ============================================================
+// Audit Log
+// ============================================================
+
+model StatusLog {
+  id          String     @id @default(cuid())
+  task_id     String
+  user_id     String
+  from_status TaskStatus
+  to_status   TaskStatus
+  note        String?
+  source      LogSource  @default(WEB)
+  created_at  DateTime   @default(now())
+
+  task Task @relation(fields: [task_id], references: [id], onDelete: Cascade)
+  user User @relation(fields: [user_id], references: [id])
+
+  @@map("status_logs")
+}
+
+// ============================================================
+// Discord AI Context
+// ============================================================
+
+model DiscordConversation {
+  id            String   @id @default(cuid())
+  channel_id    String
+  guild_id      String
+  summary       String?
+  message_count Int      @default(0)
+  participants  Json     @default("[]")
+  created_at    DateTime @default(now())
+  updated_at    DateTime @updatedAt
+
+  @@map("discord_conversations")
+}
