@@ -3,5 +3,5 @@ builder = "nixpacks"
 buildCommand = "pnpm install"
 
 [deploy]
-startCommand = "./node_modules/.bin/tsx apps/bot/src/index.ts"
+startCommand = "pnpm --filter @odin/bot start"
 restartPolicyType = "always"
