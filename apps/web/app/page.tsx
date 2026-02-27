@@ -1,5 +1,9 @@
 import { prisma } from "@odin/db";
 
+// Always render at request time — this page shows live DB data
+// and must not be statically generated at build time
+export const dynamic = "force-dynamic";
+
 export default async function HomePage() {
   const moduleCount = await prisma.module.count();
   const trackACount = await prisma.module.count({ where: { track: "A" } });
