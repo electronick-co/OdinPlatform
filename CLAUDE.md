@@ -112,7 +112,7 @@ Without it, Next.js tries to statically render the page at build time — which 
 isn't reachable from CI.
 
 ### Prisma `DATABASE_URL`
-- **Vercel**: use the public Railway URL (`nozomi.proxy.rlwy.net:10482`)
+- **Vercel**: use the public Railway URL (find it in Railway dashboard → PostgreSQL service → Connect)
 - **Railway bot service**: use the internal URL (`postgres.railway.internal:5432`)
 - **Local dev**: use the public URL in `.env` and `packages/db/.env`
 

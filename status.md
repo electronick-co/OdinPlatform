@@ -9,7 +9,7 @@ _Last updated: Session 1_
 | Service | Status | URL / Notes |
 |---------|--------|-------------|
 | GitHub repo | ✅ Live | `electronick-co/OdinPlatform` |
-| Railway PostgreSQL | ✅ Live | Internal: `postgres.railway.internal:5432` · Public: `nozomi.proxy.rlwy.net:10482` |
+| Railway PostgreSQL | ✅ Live | Internal + public URLs in Railway dashboard (not stored in repo) |
 | Railway bot service | ✅ Live | Connected to Discord as **DeepSeaBot#9710**, guild: DeepSea Developments |
 | Vercel web app | ✅ Live | Deployed from `deploy` branch, auto-redeploys on push |
 | Database schema | ✅ Pushed | All 9 tables created |
