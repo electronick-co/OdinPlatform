@@ -4,30 +4,39 @@ _Pending work by session. Update this file as tasks are completed._
 
 ---
 
-## Session 2 — Design & Mockups
+## Session 2 — Design & Mockups ✅
 
-- [ ] Generate mockup: **Dashboard home** (sprint overview, team status cards, track A/B split)
-- [ ] Generate mockup: **Sprint board** (Kanban, tasks grouped by status + member)
-- [ ] Generate mockup: **Member card** (individual progress, modules, tasks, last activity)
-- [ ] Generate mockup: **Learning track** (module grid, Cap.so video feed, show-and-tell wall)
-- [ ] Generate mockup: **Admin view** (full team visibility across both tracks)
-- [ ] Review + iterate mockups before Session 3
+- [x] Generate mockup: **Dashboard home** (sprint overview, team status cards, track A/B split)
+- [x] Generate mockup: **Sprint board** (Kanban, tasks grouped by status + member)
+- [x] Generate mockup: **Member card** (individual progress, modules, tasks, last activity)
+- [x] Generate mockup: **Learning track** (module grid, Cap.so video feed, show-and-tell wall)
+- [x] Generate mockup: **Admin view** (full team visibility across both tracks)
+- [x] Generate mockup: **Project Summary** (bot PM card, 4-star voting per objective/task, alignment scores)
+- [x] Combine all views into integrated Next.js client component at `apps/web/app/mockup/page.tsx`
+- [x] Review + iterate mockups before Session 3
 
 ---
 
-## Session 3 — Auth
+## Session 3 — Auth ✅
 
-- [ ] Install NextAuth v5 + Google OAuth provider
-- [ ] Create `app/api/auth/[...nextauth]/route.ts`
-- [ ] Add `User` creation/update on OAuth sign-in (upsert by email)
-- [ ] Protect all dashboard routes (redirect to login if unauthenticated)
-- [ ] Session management — expose user in Server Components via `auth()`
-- [ ] Add `NEXTAUTH_URL`, `NEXTAUTH_SECRET`, `GOOGLE_CLIENT_ID`, `GOOGLE_CLIENT_SECRET` to Vercel env vars
-- [ ] Test: login flow creates user in DB with correct `track` and `role`
+- [x] Install NextAuth v5 + Google OAuth provider (`next-auth@5.0.0-beta.30`)
+- [x] Create `app/api/auth/[...nextauth]/route.ts`
+- [x] Add `User` creation/update on OAuth sign-in (upsert by email, default track=A)
+- [x] Protect all dashboard routes via `middleware.ts` (redirect to /login)
+- [x] Session management — expose user in Server Components via `auth()`, JWT stores id/track/role
+- [x] Create `/login` page (Google OAuth sign-in button, matches design tokens)
+- [x] Type extension at `apps/web/types/next-auth.d.ts`
+- [ ] Add `NEXTAUTH_URL`, `NEXTAUTH_SECRET`, `GOOGLE_CLIENT_ID`, `GOOGLE_CLIENT_SECRET` to Vercel env vars (manual step — requires Google Cloud Console + Vercel dashboard)
+- [ ] End-to-end test: login flow creates user in DB with correct `track` and `role`
 
 ---
 
 ## Session 4 — Core API
+
+**Schema additions for Project Summary view:**
+- [ ] Add `Objective` model (id, title, source, status, createdAt)
+- [ ] Add `Vote` model (id, objectiveId, userId, stars 1–4, createdAt) — unique(objectiveId, userId)
+- [ ] Run `pnpm db:push` + update seed if needed
 
 Route handlers in `apps/web/app/api/`:
 
