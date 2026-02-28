@@ -1,6 +1,6 @@
 # ODIN Platform — Project Status
 
-_Last updated: Session 4_
+_Last updated: Session 5_
 
 ---
 
@@ -110,7 +110,29 @@ _Last updated: Session 4_
 
 ---
 
-### Session 5 — Web Dashboard ⏳ Not started
+### Session 5 — Web Dashboard ✅
+**Completed.** Live dashboard pages built from the Session 2 mockup design, wired to real DB data.
+
+**Delivered:**
+- `apps/web/app/dashboard/_components/tokens.ts` — shared design tokens (exact match to mockup)
+- `apps/web/app/dashboard/_components/utils.ts` — `timeAgo`, `deriveStatus`, `statusStyle`, `priStyle`, `sourceColors`
+- `apps/web/app/dashboard/_components/sidebar.tsx` — "use client", `usePathname` for active state, member nav items with blocked indicator
+- `apps/web/app/dashboard/_components/member-card.tsx` — "use client", hover lift effect, links to member profile
+- `apps/web/app/dashboard/layout.tsx` — Server Component, queries members for sidebar, wraps all dashboard routes
+- `apps/web/app/dashboard/page.tsx` — Dashboard home: active sprint card + progress bar, 4-stat chips, Track A/B member grids, activity feed
+- `apps/web/app/dashboard/sprint/page.tsx` — Sprint Board: 4-column Kanban (TODO / IN_PROGRESS / DONE / BLOCKED), task cards with assignee avatar + priority badge
+- `apps/web/app/dashboard/members/[id]/page.tsx` — Member profile: SVG progress ring, module checklist, task list, activity log
+- `apps/web/app/page.tsx` — Root redirect to `/dashboard`
+
+**Architecture:**
+- All pages are Server Components with `force-dynamic` — direct Prisma queries, no HTTP round-trips
+- Sidebar is Client Component (needs `usePathname`); member cards are Client Component (hover effects)
+- Graceful empty states: no active sprint, no tasks, no activity
+
+**TypeScript:** passes `tsc --noEmit --skipLibCheck` cleanly.
+
+---
+
 ### Session 6 — Discord Bot + AI ⏳ Not started
 ### Session 7 — Learning Track ⏳ Not started
 ### Session 8 — Email notifications ⏳ Not started
