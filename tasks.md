@@ -63,26 +63,27 @@ Route handlers in `apps/web/app/api/`:
 
 ---
 
-## Session 6 — Discord Bot + AI
+## Session 6 — Discord Bot + AI ✅
 
 Schema additions:
-- [ ] Add `discordId String? @unique` to `User` model in `packages/db/prisma/schema.prisma`
-- [ ] Run `pnpm db:push` to apply
-- [ ] Add `/link` command so users can connect their Discord account to their DB profile (if `discordId` not set, bot commands return a message prompting them to run `/link` first)
+- [x] `discord_id String? @unique` already on User model from Session 4 — no migration needed
 
 Slash commands:
-- [ ] `/status` — show your open tasks + sprint progress
-- [ ] `/done [task]` — mark a task as DONE (creates StatusLog with source=BOT)
-- [ ] `/blocked [task] [reason]` — mark as BLOCKED
-- [ ] `/submit-cap [module] [url]` — save Cap.so URL, mark module progress
-- [ ] `/summary` — AI-generated sprint summary via Claude Sonnet
-- [ ] `/ask [question]` — free-form question to Claude with team context
+- [x] `/link [name]` — case-insensitive name lookup, connects Discord ID to DB user
+- [x] `/status` — embed with user's tasks grouped by status + sprint % complete
+- [x] `/done [task]` — autocomplete on TODO/IN_PROGRESS tasks → DONE + StatusLog (source=BOT)
+- [x] `/blocked [task] [reason]` — autocomplete → BLOCKED + StatusLog with note
+- [x] `/submit-cap [module] [url]` — autocomplete on incomplete modules → upsert ModuleProgress
+- [x] `/summary` — deferred reply with Claude-generated sprint summary
+- [x] `/ask [question]` — ephemeral Claude answer with full team context
 
 AI layer:
-- [ ] Install `@anthropic-ai/sdk`
-- [ ] Add `ANTHROPIC_API_KEY` to Railway env vars
-- [ ] Build context builder (pulls active sprint, user tasks, recent status logs)
-- [ ] Wire Claude Sonnet to `/summary` and `/ask` commands
+- [x] `@anthropic-ai/sdk` installed in `@odin/bot`
+- [x] `ANTHROPIC_API_KEY` added to Railway env vars + root `.env`
+- [x] `DISCORD_CLIENT_ID` added to Railway env vars + root `.env`
+- [x] `apps/bot/src/lib/context-builder.ts` — sprint + tasks + recent logs → markdown
+- [x] `apps/bot/src/lib/claude.ts` — `askClaude()` wrapper using claude-sonnet-4-6
+- [x] Guild command registration on bot ready (instant propagation)
 
 ---
 

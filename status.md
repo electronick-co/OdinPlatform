@@ -1,6 +1,6 @@
 # ODIN Platform — Project Status
 
-_Last updated: Session 5_
+_Last updated: Session 6_
 
 ---
 
@@ -133,7 +133,33 @@ _Last updated: Session 5_
 
 ---
 
-### Session 6 — Discord Bot + AI ⏳ Not started
+### Session 6 — Discord Bot + AI ✅
+**Completed.** Slash commands live, Claude AI layer wired up, deployed to Railway.
+
+**Delivered:**
+- `apps/bot/src/lib/claude.ts` — `askClaude(system, user)` wrapper, model `claude-sonnet-4-6`, max 1024 tokens
+- `apps/bot/src/lib/context-builder.ts` — builds markdown context from active sprint + user tasks + last 10 status logs
+- `apps/bot/src/commands/` — 7 slash commands registered as guild commands (instant propagation):
+  - `/link [name]` — case-insensitive DB lookup, connects Discord ID to User record
+  - `/status` — Discord embed with user's tasks grouped by status + sprint % complete
+  - `/done [task]` — autocomplete on TODO/IN_PROGRESS tasks → marks DONE, creates StatusLog (source=BOT)
+  - `/blocked [task] [reason]` — autocomplete → marks BLOCKED with note
+  - `/submit-cap [module] [url]` — autocomplete on incomplete modules → upserts ModuleProgress
+  - `/summary` — deferred reply with Claude-generated sprint summary
+  - `/ask [question]` — ephemeral Claude answer with full team context
+- `apps/bot/src/index.ts` — guild command registration via REST on ready, `interactionCreate` handler for commands + autocomplete
+- `packages/config/src/env.ts` — added `ANTHROPIC_API_KEY` + `DISCORD_CLIENT_ID` (both optional)
+
+**Env vars added:**
+- `DISCORD_CLIENT_ID` — Railway + root `.env`
+- `ANTHROPIC_API_KEY` — Railway + root `.env`
+
+**TypeScript:** passes `tsc --noEmit` cleanly.
+
+**Deployed:** commits `5d86a5d` (Session 5) + `10c4181` (Session 6) on `deploy` branch ✓
+
+---
+
 ### Session 7 — Learning Track ⏳ Not started
 ### Session 8 — Email notifications ⏳ Not started
 ### Session 9 — Nagger cron ⏳ Not started
