@@ -31,36 +31,44 @@ _Pending work by session. Update this file as tasks are completed._
 
 ---
 
-## Session 4 — Core API
+## Session 4 — Core API ✅
 
 **Schema additions for Project Summary view:**
-- [ ] Add `Objective` model (id, title, source, status, createdAt)
-- [ ] Add `Vote` model (id, objectiveId, userId, stars 1–4, createdAt) — unique(objectiveId, userId)
-- [ ] Run `pnpm db:push` + update seed if needed
+- [x] Add `Objective` model (id, title, source, status, createdAt)
+- [x] Add `Vote` model (id, objectiveId, userId, stars 1–4, createdAt) — unique(objectiveId, userId)
+- [x] Run `pnpm db:push` + update seed if needed
 
 Route handlers in `apps/web/app/api/`:
 
-- [ ] `GET/POST /api/sprints` — list all, create new
-- [ ] `GET/PATCH /api/sprints/[id]` — get one, update (activate/deactivate)
-- [ ] `GET/POST /api/tasks` — list (filterable by sprint/assignee/status), create
-- [ ] `PATCH /api/tasks/[id]` — update status/priority (creates StatusLog entry)
-- [ ] `GET /api/modules` — list all modules by track
-- [ ] `GET /api/users` — list team members with progress summary
-- [ ] `GET /api/users/[id]` — individual member detail
+- [x] `GET/POST /api/sprints` — list all, create new
+- [x] `GET/PATCH /api/sprints/[id]` — get one, update (activate/deactivate)
+- [x] `GET/POST /api/tasks` — list (filterable by sprint/assignee/status), create
+- [x] `PATCH /api/tasks/[id]` — update status/priority (creates StatusLog entry)
+- [x] `GET /api/modules` — list all modules by track
+- [x] `GET /api/users` — list team members with progress summary
+- [x] `GET /api/users/[id]` — individual member detail
 
 ---
 
-## Session 5 — Web Dashboard
+## Session 5 — Web Dashboard ✅
 
-- [ ] Sprint board page (`/dashboard`) — Kanban columns by TaskStatus
-- [ ] Member cards — progress ring, task count, last activity
-- [ ] Track A/B split view
-- [ ] Navigation layout (sidebar or topbar)
-- [ ] Follow approved mockups from Session 2
+- [x] Sprint board page (`/dashboard/sprint`) — Kanban columns by TaskStatus
+- [x] Member cards — module progress dots, status badge, last activity, hover lift + link
+- [x] Track A/B split view on dashboard home
+- [x] Sidebar navigation (fixed, pathname-based active state, member list with blocked indicator)
+- [x] Dashboard home — active sprint card, 4-stat chips, Track A/B grids, activity feed
+- [x] Member profile page (`/dashboard/members/[id]`) — SVG progress ring, module checklist, tasks, activity log
+- [x] Root `/` redirects to `/dashboard`
+- [x] TypeScript passes `tsc --noEmit --skipLibCheck` cleanly
 
 ---
 
 ## Session 6 — Discord Bot + AI
+
+Schema additions:
+- [ ] Add `discordId String? @unique` to `User` model in `packages/db/prisma/schema.prisma`
+- [ ] Run `pnpm db:push` to apply
+- [ ] Add `/link` command so users can connect their Discord account to their DB profile (if `discordId` not set, bot commands return a message prompting them to run `/link` first)
 
 Slash commands:
 - [ ] `/status` — show your open tasks + sprint progress

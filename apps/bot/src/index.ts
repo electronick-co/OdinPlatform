@@ -1,8 +1,15 @@
 import "./load-env"; // must be first — loads .env before any other module runs
 import { createServer } from "http";
-import { Client, GatewayIntentBits } from "discord.js";
+import {
+  Client,
+  GatewayIntentBits,
+  InteractionType,
+  REST,
+  Routes,
+} from "discord.js";
 import { env } from "@odin/config";
 import { prisma } from "@odin/db";
+import { commands, commandBuilders } from "./commands";
 
 // Health-check server — keeps Railway from sleeping the worker (production only)
 if (process.env["NODE_ENV"] === "production") {
@@ -38,10 +45,54 @@ client.once("ready", async (c) => {
     console.log(`📋 Guild: ${guild?.name ?? "Guild not found (check DISCORD_GUILD_ID)"}`);
     console.log(`👥 Users in DB: ${userCount}`);
     console.log(`📚 Modules in DB: ${moduleCount}`);
+
+    // Register guild slash commands (instant propagation)
+    if (env.DISCORD_CLIENT_ID) {
+      const rest = new REST().setToken(env.DISCORD_TOKEN!);
+      const body = commandBuilders.map((b) => b.toJSON());
+      await rest.put(
+        Routes.applicationGuildCommands(env.DISCORD_CLIENT_ID, env.DISCORD_GUILD_ID!),
+        { body }
+      );
+      console.log(`⚡ Registered ${body.length} slash commands`);
+    } else {
+      console.warn("⚠️  DISCORD_CLIENT_ID not set — skipping slash command registration");
+    }
+
     console.log(`🚀 ODIN Bot is ready.`);
   } catch (error) {
     console.error("❌ Error during bot startup:", error);
     process.exit(1);
+  }
+});
+
+client.on("interactionCreate", async (interaction) => {
+  if (interaction.type === InteractionType.ApplicationCommandAutocomplete) {
+    const command = commands.get(interaction.commandName);
+    if (!command?.autocomplete) return;
+    try {
+      await command.autocomplete(interaction);
+    } catch (err) {
+      console.error(`Autocomplete error for /${interaction.commandName}:`, err);
+    }
+    return;
+  }
+
+  if (!interaction.isChatInputCommand()) return;
+
+  const command = commands.get(interaction.commandName);
+  if (!command) return;
+
+  try {
+    await command.execute(interaction);
+  } catch (err) {
+    console.error(`Error executing /${interaction.commandName}:`, err);
+    const msg = { content: "❌ Something went wrong.", ephemeral: true };
+    if (interaction.replied || interaction.deferred) {
+      await interaction.followUp(msg);
+    } else {
+      await interaction.reply(msg);
+    }
   }
 });
 

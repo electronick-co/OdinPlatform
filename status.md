@@ -1,6 +1,6 @@
 # ODIN Platform — Project Status
 
-_Last updated: Session 2_
+_Last updated: Session 5_
 
 ---
 
@@ -12,7 +12,7 @@ _Last updated: Session 2_
 | Railway PostgreSQL | ✅ Live | Internal + public URLs in Railway dashboard (not stored in repo) |
 | Railway bot service | ✅ Live | Connected to Discord as **DeepSeaBot#9710**, guild: DeepSea Developments |
 | Vercel web app | ✅ Live | Deployed from `deploy` branch, auto-redeploys on push |
-| Database schema | ✅ Pushed | All 9 tables created |
+| Database schema | ✅ Pushed | 11 tables (+ objectives + votes) |
 | Database seed | ✅ Done | 13 modules (Track A: 8, Track B: 5) |
 
 ---
@@ -73,12 +73,66 @@ _Last updated: Session 2_
 - User upsert on sign-in: new users default to `track=A, role=MEMBER` (update via DB for Track B)
 - JWT strategy: `userId`, `track`, `role` stored in token after first sign-in (no DB hit per request)
 
-**Pending (manual setup):**
-- Create Google OAuth app in Google Cloud Console → copy `GOOGLE_CLIENT_ID` + `GOOGLE_CLIENT_SECRET`
-- Add all four env vars to Vercel: `NEXTAUTH_URL`, `NEXTAUTH_SECRET`, `GOOGLE_CLIENT_ID`, `GOOGLE_CLIENT_SECRET`
-- End-to-end test login flow creates User in DB
-### Session 4 — Core API ⏳ Not started
-### Session 5 — Web Dashboard ⏳ Not started
+**Auth env vars (all configured):**
+- `AUTH_SECRET` — in Vercel + `apps/web/.env.local` (gitignored)
+- `NEXTAUTH_URL` — in Vercel + `apps/web/.env.local`
+- `GOOGLE_CLIENT_ID` / `GOOGLE_CLIENT_SECRET` — in Vercel + `apps/web/.env.local`
+- Root `.env` holds bot + DB vars; Next.js loads from `apps/web/.env.local` (not root)
+
+**Known quirks resolved:**
+- NextAuth v5 reads `AUTH_SECRET` (not `NEXTAUTH_SECRET`) — removed explicit `secret:` from config
+- Next.js doesn't auto-load root monorepo `.env` — must use `apps/web/.env.local` for web vars
+- Prisma DLL locked on Windows while dev server runs — stop all Node processes before `prisma generate`
+- `pnpm` not on Git Bash PATH — use `npx pnpm` for all commands
+
+**Deployed:** commit `7a379a5` on `deploy` branch ✓
+
+---
+
+### Session 4 — Core API ✅
+**Completed.** Prisma schema extended, all core API route handlers built and type-checked.
+
+**Schema additions:**
+- `ObjectiveStatus` enum (PROPOSED / ALIGNED / REVIEWING / CONTESTED)
+- `Objective` model — title, source (LogSource), status, createdAt
+- `Vote` model — objectiveId + userId unique pair, stars 1–4
+
+**API routes (all auth-protected, force-dynamic):**
+- `GET/POST /api/sprints` — list all (with task/member counts), create new
+- `GET/PATCH /api/sprints/[id]` — get detail with tasks + members; activating a sprint deactivates all others
+- `GET/POST /api/tasks` — list (filterable by sprint_id / assignee_id / status), create
+- `PATCH /api/tasks/[id]` — update status/priority; auto-creates `StatusLog` on status change
+- `GET /api/modules` — list by track (optional `?track=A|B`)
+- `GET /api/users` — team summary (tasks_total/done, modules_completed, last_activity)
+- `GET /api/users/[id]` — full member detail (tasks, module progress, last 20 status logs)
+
+**TypeScript:** passes `tsc --noEmit` cleanly.
+
+---
+
+### Session 5 — Web Dashboard ✅
+**Completed.** Live dashboard pages built from the Session 2 mockup design, wired to real DB data.
+
+**Delivered:**
+- `apps/web/app/dashboard/_components/tokens.ts` — shared design tokens (exact match to mockup)
+- `apps/web/app/dashboard/_components/utils.ts` — `timeAgo`, `deriveStatus`, `statusStyle`, `priStyle`, `sourceColors`
+- `apps/web/app/dashboard/_components/sidebar.tsx` — "use client", `usePathname` for active state, member nav items with blocked indicator
+- `apps/web/app/dashboard/_components/member-card.tsx` — "use client", hover lift effect, links to member profile
+- `apps/web/app/dashboard/layout.tsx` — Server Component, queries members for sidebar, wraps all dashboard routes
+- `apps/web/app/dashboard/page.tsx` — Dashboard home: active sprint card + progress bar, 4-stat chips, Track A/B member grids, activity feed
+- `apps/web/app/dashboard/sprint/page.tsx` — Sprint Board: 4-column Kanban (TODO / IN_PROGRESS / DONE / BLOCKED), task cards with assignee avatar + priority badge
+- `apps/web/app/dashboard/members/[id]/page.tsx` — Member profile: SVG progress ring, module checklist, task list, activity log
+- `apps/web/app/page.tsx` — Root redirect to `/dashboard`
+
+**Architecture:**
+- All pages are Server Components with `force-dynamic` — direct Prisma queries, no HTTP round-trips
+- Sidebar is Client Component (needs `usePathname`); member cards are Client Component (hover effects)
+- Graceful empty states: no active sprint, no tasks, no activity
+
+**TypeScript:** passes `tsc --noEmit --skipLibCheck` cleanly.
+
+---
+
 ### Session 6 — Discord Bot + AI ⏳ Not started
 ### Session 7 — Learning Track ⏳ Not started
 ### Session 8 — Email notifications ⏳ Not started

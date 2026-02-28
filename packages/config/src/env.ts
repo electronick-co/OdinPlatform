@@ -20,6 +20,12 @@ const schema = z.object({
   // Google OAuth — optional (Session 3)
   GOOGLE_CLIENT_ID: z.string().optional(),
   GOOGLE_CLIENT_SECRET: z.string().optional(),
+
+  // Anthropic AI — optional (Session 6)
+  ANTHROPIC_API_KEY: z.string().optional(),
+
+  // Discord application ID — optional (Session 6, for slash command registration)
+  DISCORD_CLIENT_ID: z.string().optional(),
 });
 
 const result = schema.safeParse(process.env);
