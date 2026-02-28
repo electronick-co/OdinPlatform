@@ -1,0 +1,15 @@
+export const t = {
+  bg:      "#f1f4f8",
+  surface: "#ffffff",
+  border:  "#e2e8f0",
+  borderHi:"#cbd5e1",
+  trackA:  "#2563eb",
+  trackB:  "#0d9488",
+  text0:   "#0f172a",
+  text1:   "#64748b",
+  text2:   "#94a3b8",
+  radius:  "10px",
+  sans:    "'DM Sans', system-ui, sans-serif",
+  display: "'Syne', system-ui, sans-serif",
+  mono:    "'Space Mono', monospace",
+} as const;
