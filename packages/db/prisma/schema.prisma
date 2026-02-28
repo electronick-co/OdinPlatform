@@ -40,6 +40,13 @@ enum LogSource {
   CRON
 }
 
+enum ObjectiveStatus {
+  PROPOSED
+  ALIGNED
+  REVIEWING
+  CONTESTED
+}
+
 // ============================================================
 // Users
 // ============================================================
@@ -59,6 +66,7 @@ model User {
   tasks             Task[]
   module_progresses ModuleProgress[]
   status_logs       StatusLog[]
+  votes             Vote[]
 
   @@map("users")
 }
@@ -184,6 +192,40 @@ model StatusLog {
   user User @relation(fields: [user_id], references: [id])
 
   @@map("status_logs")
+}
+
+// ============================================================
+// Discord AI Context
+// ============================================================
+
+// ============================================================
+// Project Objectives + Voting (Project Summary view)
+// ============================================================
+
+model Objective {
+  id         String          @id @default(cuid())
+  title      String
+  source     LogSource       @default(BOT)
+  status     ObjectiveStatus @default(PROPOSED)
+  created_at DateTime        @default(now())
+
+  votes Vote[]
+
+  @@map("objectives")
+}
+
+model Vote {
+  id           String    @id @default(cuid())
+  objective_id String
+  user_id      String
+  stars        Int       // 1–4
+  created_at   DateTime  @default(now())
+
+  objective Objective @relation(fields: [objective_id], references: [id], onDelete: Cascade)
+  user      User      @relation(fields: [user_id], references: [id], onDelete: Cascade)
+
+  @@unique([objective_id, user_id])
+  @@map("votes")
 }
 
 // ============================================================

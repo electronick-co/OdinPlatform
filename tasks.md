@@ -31,22 +31,22 @@ _Pending work by session. Update this file as tasks are completed._
 
 ---
 
-## Session 4 — Core API
+## Session 4 — Core API ✅
 
 **Schema additions for Project Summary view:**
-- [ ] Add `Objective` model (id, title, source, status, createdAt)
-- [ ] Add `Vote` model (id, objectiveId, userId, stars 1–4, createdAt) — unique(objectiveId, userId)
-- [ ] Run `pnpm db:push` + update seed if needed
+- [x] Add `Objective` model (id, title, source, status, createdAt)
+- [x] Add `Vote` model (id, objectiveId, userId, stars 1–4, createdAt) — unique(objectiveId, userId)
+- [x] Run `pnpm db:push` + update seed if needed
 
 Route handlers in `apps/web/app/api/`:
 
-- [ ] `GET/POST /api/sprints` — list all, create new
-- [ ] `GET/PATCH /api/sprints/[id]` — get one, update (activate/deactivate)
-- [ ] `GET/POST /api/tasks` — list (filterable by sprint/assignee/status), create
-- [ ] `PATCH /api/tasks/[id]` — update status/priority (creates StatusLog entry)
-- [ ] `GET /api/modules` — list all modules by track
-- [ ] `GET /api/users` — list team members with progress summary
-- [ ] `GET /api/users/[id]` — individual member detail
+- [x] `GET/POST /api/sprints` — list all, create new
+- [x] `GET/PATCH /api/sprints/[id]` — get one, update (activate/deactivate)
+- [x] `GET/POST /api/tasks` — list (filterable by sprint/assignee/status), create
+- [x] `PATCH /api/tasks/[id]` — update status/priority (creates StatusLog entry)
+- [x] `GET /api/modules` — list all modules by track
+- [x] `GET /api/users` — list team members with progress summary
+- [x] `GET /api/users/[id]` — individual member detail
 
 ---
 

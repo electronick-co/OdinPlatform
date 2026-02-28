@@ -1,6 +1,6 @@
 # ODIN Platform — Project Status
 
-_Last updated: Session 3_
+_Last updated: Session 4_
 
 ---
 
@@ -12,7 +12,7 @@ _Last updated: Session 3_
 | Railway PostgreSQL | ✅ Live | Internal + public URLs in Railway dashboard (not stored in repo) |
 | Railway bot service | ✅ Live | Connected to Discord as **DeepSeaBot#9710**, guild: DeepSea Developments |
 | Vercel web app | ✅ Live | Deployed from `deploy` branch, auto-redeploys on push |
-| Database schema | ✅ Pushed | All 9 tables created |
+| Database schema | ✅ Pushed | 11 tables (+ objectives + votes) |
 | Database seed | ✅ Done | 13 modules (Track A: 8, Track B: 5) |
 
 ---
@@ -89,7 +89,27 @@ _Last updated: Session 3_
 
 ---
 
-### Session 4 — Core API ⏳ Not started
+### Session 4 — Core API ✅
+**Completed.** Prisma schema extended, all core API route handlers built and type-checked.
+
+**Schema additions:**
+- `ObjectiveStatus` enum (PROPOSED / ALIGNED / REVIEWING / CONTESTED)
+- `Objective` model — title, source (LogSource), status, createdAt
+- `Vote` model — objectiveId + userId unique pair, stars 1–4
+
+**API routes (all auth-protected, force-dynamic):**
+- `GET/POST /api/sprints` — list all (with task/member counts), create new
+- `GET/PATCH /api/sprints/[id]` — get detail with tasks + members; activating a sprint deactivates all others
+- `GET/POST /api/tasks` — list (filterable by sprint_id / assignee_id / status), create
+- `PATCH /api/tasks/[id]` — update status/priority; auto-creates `StatusLog` on status change
+- `GET /api/modules` — list by track (optional `?track=A|B`)
+- `GET /api/users` — team summary (tasks_total/done, modules_completed, last_activity)
+- `GET /api/users/[id]` — full member detail (tasks, module progress, last 20 status logs)
+
+**TypeScript:** passes `tsc --noEmit` cleanly.
+
+---
+
 ### Session 5 — Web Dashboard ⏳ Not started
 ### Session 6 — Discord Bot + AI ⏳ Not started
 ### Session 7 — Learning Track ⏳ Not started
